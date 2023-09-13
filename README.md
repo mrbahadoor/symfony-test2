@@ -1,3 +1,3 @@
 # symfony-test2
 
-API platform wit symfony 5.4
+API platform with symfony 5.4
