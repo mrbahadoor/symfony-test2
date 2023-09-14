@@ -33,9 +33,7 @@ class EquipmentController extends AbstractController
 
         $equipments = $repository->findAll();
 
-        return $this->json([
-                'data' => $equipments,
-        ]);
+        return $this->json($equipments, Response::HTTP_OK);
 
     }
 
@@ -46,9 +44,9 @@ class EquipmentController extends AbstractController
     {
         $equipment = $this->doctrine->getRepository(Equipment::class)->find($id);
         if($equipment){
-            return $this->json($equipment);
+            return $this->json($equipment, Response::HTTP_OK);
         }else{
-            return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -62,7 +60,7 @@ class EquipmentController extends AbstractController
         $em->persist($equipment);
         $em->flush;
 
-        return $this->json($equipment);
+        return $this->json($equipment, Response::HTTP_CREATED);
     }
     
 
@@ -91,14 +89,14 @@ class EquipmentController extends AbstractController
         }
 
         if($countFieldsToUpdate > 0){
-            
+
             $em = $this->doctrine->getManager();
             $em->persist($equipment);
             $em->flush;
 
-            return $this->json($equipment);
+            return $this->json($equipment, Response::HTTP_CREATED);
         }else{
-            return $this->json([]);
+            return new JsonResponse(null, Response::HTTP_NO_CONTENT);
         }
 
         
