@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\EquipmentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+// use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use DateTime;
@@ -21,7 +22,7 @@ use DateTime;
  *      "description": "partial"      
  *    }
  * )
- * @ApiResource
+ * @ApiResource(formats= {"json"})
  */
 class Equipment
 {
