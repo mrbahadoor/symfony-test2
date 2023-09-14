@@ -24,7 +24,8 @@ class EquipmentRepositoryTest extends KernelTestCase
     }
 
 
-    public function testAddOneEquipment(){
+    public function testAddOneEquipment():void
+    {
         
         $descText = 'description '.strtotime('now');
         // Setup

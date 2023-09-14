@@ -3,22 +3,25 @@
 namespace App\Tests;
 
 use App\Entity\Equipment;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
+
 class EquipmentRequestTest extends WebTestCase
 {   
-    private $client = null;
-    private $entityManager;
+    protected $client = null;
+    protected EntityManagerInterface $entityManager;
+    
     
     protected function setUp(): void
     {
         $this->client = static::createClient();
-        $this->entityManager = self::getContainer()->get('doctrine')->getManager();
+        $this->entityManager = self::getContainer()->get(EntityManagerInterface::class);
     }
     
-    public function testCreateEquipment(){
+    public function testCreateEquipment():void
+    {
 
         $this->client->request(
             'POST', 'api/equipment',
@@ -50,7 +53,8 @@ class EquipmentRequestTest extends WebTestCase
     }
 
     public function testGetAllEquipments():void
-    {      
+    {     
+               
         $this->client->request('GET', '/api/equipment');
 
         $response = $this->client->getResponse();
@@ -68,7 +72,8 @@ class EquipmentRequestTest extends WebTestCase
         $this->assertIsArray($equipments);
     }
 
-    public function testUpdateEquipment(){
+    public function testUpdateEquipment():void
+    {
                
         $record = $this->entityManager->getRepository(Equipment::class)->findOneBy(['name' => 'test']);
         
@@ -86,6 +91,7 @@ class EquipmentRequestTest extends WebTestCase
                 'name' => 'test updated',
                 'category' => 'mobile',
                 'number' => '133444',
+                'description' => 'this is the description',
             ])
         );
     
@@ -105,7 +111,8 @@ class EquipmentRequestTest extends WebTestCase
         $this->assertObjectHasProperty('updatedAt', $obj, 'has updatedAt property');
     }
 
-    public function testDeleteEquipment(){
+    public function testDeleteEquipment():void
+    {
 
         $record = $this->entityManager->getRepository(Equipment::class)->findOneBy(['name' => 'test updated']);
         
