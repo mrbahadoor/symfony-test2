@@ -4,9 +4,23 @@ namespace App\Entity;
 
 use App\Repository\EquipmentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use DateTime;
 
 /**
  * @ORM\Entity(repositoryClass=EquipmentRepository::class)
+ * @ApiFilter(
+ *    SearchFilter::class,
+ *    properties={
+ *      "id": "exact",
+ *      "name": "partial",
+ *      "category": "exact",
+ *      "description": "partial"      
+ *    }
+ * )
+ * @ApiResource
  */
 class Equipment
 {
@@ -46,6 +60,12 @@ class Equipment
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
+
+
+    public function __construct()
+    {
+        $this->setCreatedAt(new DateTime());
+    }
 
     public function getId(): ?int
     {
