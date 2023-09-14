@@ -4,6 +4,7 @@ namespace App\Tests\Repository;
 
 use App\Entity\Equipment;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
 class EquipmentRepositoryTest extends KernelTestCase
 {
@@ -52,7 +53,11 @@ class EquipmentRepositoryTest extends KernelTestCase
     {
         parent::tearDown();
 
+        $purger = new ORMPurger($this->entityManager);
+        $purger->purge();
+
         // doing this is recommended to avoid memory leaks
+      
         $this->entityManager->close();
         $this->entityManager = null;
     }

@@ -3,34 +3,24 @@
 namespace App\Tests;
 
 use App\Entity\Equipment;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class EquipmentRequestTest extends WebTestCase
-{
-
-
-    public function testGetAllEquipments():void
+{   
+    private $client = null;
+    private $entityManager;
+    
+    protected function setUp(): void
     {
-        $client = static::createClient();
-
-        $client->request('GET', '/api/equipment');
-
-        // $response = $client->getResponse();
-       
-        $this->assertResponseIsSuccessful();
-        
-        $this->assertResponseHeaderSame(
-            'Content-Type', 'application/json; charset=utf-8'
-        );
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->client = static::createClient();
+        $this->entityManager = self::getContainer()->get('doctrine')->getManager();
     }
-
+    
     public function testCreateEquipment(){
-        $client = static::createClient();
 
-        $client->request(
+        $this->client->request(
             'POST', 'api/equipment',
             [],
             [],
@@ -43,7 +33,9 @@ class EquipmentRequestTest extends WebTestCase
                 'number' => '133444',
             ])
         );
-        
+
+        $response = $this->client->getResponse();
+
         $this->assertResponseIsSuccessful();
         
         $this->assertResponseHeaderSame(
@@ -51,20 +43,39 @@ class EquipmentRequestTest extends WebTestCase
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
+       
+        $obj = @json_decode($response->getContent());
         
+        $this->assertIsObject($obj);
+    }
+
+    public function testGetAllEquipments():void
+    {      
+        $this->client->request('GET', '/api/equipment');
+
+        $response = $this->client->getResponse();
+       
+        $this->assertResponseIsSuccessful();
+        
+        $this->assertResponseHeaderSame(
+            'Content-Type', 'application/json; charset=utf-8'
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+        $equipments = json_decode($response->getContent());
+
+        $this->assertIsArray($equipments);
     }
 
     public function testUpdateEquipment(){
-        $client = self::createClient();
-        
-        $em = self::getContainer()->get('doctrine')->getManager();
-
-        $record = $em->getRepository(Equipment::class)->findOneBy(['name' => 'test']);
+               
+        $record = $this->entityManager->getRepository(Equipment::class)->findOneBy(['name' => 'test']);
         
         $recordId = $record->getId();
        
 
-        $client->request(
+        $this->client->request(
             'PUT', 'api/equipment/'.$recordId,
             [],
             [],
@@ -78,6 +89,8 @@ class EquipmentRequestTest extends WebTestCase
             ])
         );
     
+        $response = $this->client->getResponse();
+        $obj = json_decode($response->getContent());
         
         $this->assertResponseIsSuccessful();
         
@@ -87,23 +100,24 @@ class EquipmentRequestTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
+        $this->assertIsObject($obj);
+
+        $this->assertObjectHasProperty('updatedAt', $obj, 'has updatedAt property');
     }
 
     public function testDeleteEquipment(){
-        $client = self::createClient();
-        
-        $em = self::getContainer()->get('doctrine')->getManager();
 
-        $record = $em->getRepository(Equipment::class)->findOneBy(['name' => 'test updated']);
+        $record = $this->entityManager->getRepository(Equipment::class)->findOneBy(['name' => 'test updated']);
         
-        $recordId = $record->getId();
-       
+        $recordId = $record->getId();       
 
-        $client->request(
+        $this->client->request(
             'DELETE', 'api/equipment/'.$recordId
         );
 
         $this->assertResponseIsSuccessful();
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
 
     }
 
