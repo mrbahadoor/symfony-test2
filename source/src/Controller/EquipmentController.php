@@ -67,7 +67,7 @@ class EquipmentController extends AbstractController
     
 
     /**
-     * @Route("/{id}", name="equipment_update", methods={"PUT"})
+     * @Route("/{id}", name="equipment_update", requirements={"id"="\d+"}, methods={"PUT"})
      */
     public function updateEquipment($id, Request $request)
     {
@@ -91,8 +91,7 @@ class EquipmentController extends AbstractController
         }
 
         if($countFieldsToUpdate > 0){
-            $equipment->setUpdatedAt(new DateTime());
-
+            
             $em = $this->doctrine->getManager();
             $em->persist($equipment);
             $em->flush;

@@ -11,6 +11,7 @@ use DateTime;
 
 /**
  * @ORM\Entity(repositoryClass=EquipmentRepository::class)
+ * @ORM\HasLifecycleCallbacks
  * @ApiFilter(
  *    SearchFilter::class,
  *    properties={
@@ -61,10 +62,25 @@ class Equipment
      */
     private $updatedAt;
 
+   
+    /**
+     * Gets triggered only on insert
 
-    public function __construct()
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
     {
-        $this->setCreatedAt(new DateTime());
+        $this->setCreatedAt(new \DateTime("now"));
+    }
+
+    /**
+     * Gets triggered every time on update
+
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate()
+    {
+        $this->setUpdatedAt(new \DateTime("now"));
     }
 
     public function getId(): ?int
