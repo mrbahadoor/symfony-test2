@@ -4,25 +4,11 @@ namespace App\Entity;
 
 use App\Repository\EquipmentRepository;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Core\Annotation\ApiResource;
-// use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use DateTime;
 
 /**
  * @ORM\Entity(repositoryClass=EquipmentRepository::class)
  * @ORM\HasLifecycleCallbacks
- * @ApiFilter(
- *    SearchFilter::class,
- *    properties={
- *      "id": "exact",
- *      "name": "partial",
- *      "category": "exact",
- *      "description": "partial"      
- *    }
- * )
- * @ApiResource(formats= {"json"})
  */
 class Equipment
 {
@@ -84,6 +70,7 @@ class Equipment
         $this->setUpdatedAt(new \DateTime("now"));
     }
 
+    
     public function getId(): ?int
     {
         return $this->id;
