@@ -13,9 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 // use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
-/**
- * @Route("/api/v1/equipment")
- */
+#[Route('/v1/equipment')]
 class EquipmentController extends AbstractController
 {
     private $doctrine;
@@ -24,9 +22,7 @@ class EquipmentController extends AbstractController
     }    
     
     
-    /**
-     * @Route("/", name="equipment_list", methods={"GET"})
-     */
+    #[Route('/', name: 'equipment_list', methods: ['GET'])]
     public function listEquipments(Request $request)
     {
 
@@ -48,9 +44,7 @@ class EquipmentController extends AbstractController
 
     }
 
-    /**
-     * @Route("/{id}", name="equipment_by_id", requirements={"id"="\d+"}, methods={"GET"})
-     */
+    #[Route('/{id}', name: 'equipment_by_id', requirements: ['id' => '\d+'], methods: ['GET'])]    
     public function equipmentById($id)
     {
         $equipment = $this->doctrine->getRepository(Equipment::class)->find($id);
@@ -61,9 +55,7 @@ class EquipmentController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/", name="equipment_add", methods={"POST"})
-     */
+    #[Route('', name: 'equipment_add', methods: ['POST'])]
     public function addEquipment(Request $request, SerializerInterface $serializer)
     {
         $equipment = $serializer->deserialize($request->getContent(), Equipment::class, 'json');
@@ -75,9 +67,7 @@ class EquipmentController extends AbstractController
     }
     
 
-    /**
-     * @Route("/{id}", name="equipment_update", requirements={"id"="\d+"}, methods={"PUT"})
-     */
+    #[Route('/{id}', name: 'equipment_update', requirements: ['id' => '\d+'], methods: ['PUT'])]    
     public function updateEquipment($id, Request $request)
     {
         $equipment = $this->doctrine->getRepository(Equipment::class)->find($id);
@@ -113,9 +103,7 @@ class EquipmentController extends AbstractController
         
     }
 
-    /**
-     * @Route("/{id}", name="equipment_delete", methods={"DELETE"})
-     */
+    #[Route('/{id}', name: 'equipment_delete', methods: ['DELETE'])]
     public function deleteEquipment(Equipment $equipment)
     {
         $em = $this->doctrine->getManager();

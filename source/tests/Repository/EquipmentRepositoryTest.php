@@ -29,7 +29,7 @@ class EquipmentRepositoryTest extends KernelTestCase
         
         $descText = 'description '.strtotime('now');
         // Setup
-        $equipment = new Equipment();
+        $equipment = new Equipment;
         $equipment->setName('test');
         $equipment->setCategory('test category');
         $equipment->setNumber('123456');

@@ -12,7 +12,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/api/equipment",
+					"raw": "http://localhost:8000/api/v1/equipment?description=repel&name=open",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -20,6 +20,7 @@
 					"port": "8000",
 					"path": [
 						"api",
+						"v1",
 						"equipment"
 					],
 					"query": [
@@ -42,6 +43,14 @@
 							"key": "number",
 							"value": "000003",
 							"disabled": true
+						},
+						{
+							"key": "description",
+							"value": "repel"
+						},
+						{
+							"key": "name",
+							"value": "open"
 						}
 					]
 				}
@@ -55,7 +64,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"Iphone 7\",\n    \"category\": \"téléphone\",\n    \"number\": \"00003\"\n}",
+					"raw": "{\n    \"name\": \"Xaomi Redmi\",\n    \"category\": \"mobile\",\n    \"number\": \"00221\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -63,7 +72,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/equipment",
+					"raw": "http://localhost:8000/api/v1/equipment",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -71,6 +80,7 @@
 					"port": "8000",
 					"path": [
 						"api",
+						"v1",
 						"equipment"
 					]
 				}
@@ -84,7 +94,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"test\",\n    \"number\" : \"\"\n}",
+					"raw": "{\n    \"name\": \"Iphone 11\",\n    \"number\" : \"mobile\",\n    \"description\": \"old mobile\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -92,7 +102,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/equipment/5",
+					"raw": "http://localhost:8000/api/v1/equipment/101",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -100,8 +110,9 @@
 					"port": "8000",
 					"path": [
 						"api",
+						"v1",
 						"equipment",
-						"5"
+						"101"
 					]
 				}
 			},
@@ -113,7 +124,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/api/equipment/5",
+					"raw": "http://localhost:8000/api/v1/equipment/100",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -121,8 +132,9 @@
 					"port": "8000",
 					"path": [
 						"api",
+						"v1",
 						"equipment",
-						"5"
+						"100"
 					]
 				}
 			},

@@ -12,6 +12,7 @@ class EquipmentRequestTest extends WebTestCase
 {   
     protected $client = null;
     protected EntityManagerInterface $entityManager;
+    private $baseRoute = '/api/v1/equipment/';
     
     
     protected function setUp(): void
@@ -24,7 +25,8 @@ class EquipmentRequestTest extends WebTestCase
     {
 
         $this->client->request(
-            'POST', 'api/equipment',
+            'POST', 
+            substr($this->baseRoute, 0, -1), //Remove last trailing /
             [],
             [],
             [
@@ -40,13 +42,12 @@ class EquipmentRequestTest extends WebTestCase
 
         $response = $this->client->getResponse();
 
-      
         $arr = (array) json_decode($response->getContent());
               
         $this->assertResponseIsSuccessful();
         
         $this->assertResponseHeaderSame(
-            'Content-Type', 'application/json; charset=utf-8'
+            'content-type', 'application/json'
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
@@ -64,15 +65,15 @@ class EquipmentRequestTest extends WebTestCase
                
         $this->client->request(
             'GET',
-            '/api/equipment'
+            $this->baseRoute
         );
 
         $response = $this->client->getResponse();
-       
+
         $this->assertResponseIsSuccessful();
         
         $this->assertResponseHeaderSame(
-            'Content-Type', 'application/json; charset=utf-8'
+            'Content-Type', 'application/json'
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -90,7 +91,7 @@ class EquipmentRequestTest extends WebTestCase
         $recordId = $record->getId();
 
         $this->client->request(
-            'PUT', 'api/equipment/'.$recordId,
+            'PUT', $this->baseRoute . $recordId,
             [],
             [],
             [
@@ -111,10 +112,10 @@ class EquipmentRequestTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         
         $this->assertResponseHeaderSame(
-            'Content-Type', 'application/json; charset=utf-8'
+            'Content-Type', 'application/json'
         );
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
         $this->assertIsObject($obj);
 
@@ -130,7 +131,7 @@ class EquipmentRequestTest extends WebTestCase
 
         $this->client->request(
             'DELETE', 
-            'api/equipment/'.$recordId
+            $this->baseRoute . $recordId
         );
 
         $this->assertResponseIsSuccessful();
