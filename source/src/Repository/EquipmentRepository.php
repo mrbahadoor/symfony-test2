@@ -39,20 +39,38 @@ class EquipmentRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Equipment[] Returns an array of Equipment objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+    * @return Equipment[] Returns an array of Equipment objects
+    */
+    public function findByFilters($filters): array
+    {
+       
+        $queryBuilder = $this->createQueryBuilder('e');
+
+        $exactFilters = ['id', 'category', 'number'];
+
+        foreach($exactFilters as $filter){
+            if(isset($filters[$filter])){
+                $queryBuilder->andWhere('e.'.$filter.' = :'.$filter);
+                $queryBuilder->setParameter($filter, $filters[$filter]);
+            }
+        }
+
+
+        $partialFilters = ['name', 'description'];
+
+        foreach($partialFilters as $filter){
+            if(isset($filters[$filter])){
+                $queryBuilder->andWhere('e.'.$filter.' LIKE :'.$filter);
+                $queryBuilder->setParameter($filter, '%' . $filters[$filter] . '%');
+            }
+        }
+
+        return $queryBuilder
+                //->setMaxResults(10)
+                ->getQuery()
+                ->getResult();
+    }
 
 //    public function findOneBySomeField($value): ?Equipment
 //    {

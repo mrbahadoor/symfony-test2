@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 // use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
- * @Route("/equipment")
+ * @Route("/api/v1/equipment")
  */
 class EquipmentController extends AbstractController
 {
@@ -27,11 +27,22 @@ class EquipmentController extends AbstractController
     /**
      * @Route("/", name="equipment_list", methods={"GET"})
      */
-    public function listEquipments()
+    public function listEquipments(Request $request)
     {
-        $repository = $this->doctrine->getRepository(Equipment::class);
 
-        $equipments = $repository->findAll();
+        $entityManager = $this->doctrine->getManager();
+        $equipmentRepository = $entityManager->getRepository(Equipment::class);
+        $filters = [];
+
+        $fields = ['id', 'name', 'category', 'number', 'description'];
+
+        foreach($fields as $field){
+            if($request->query->has($field)){
+                $filters[$field] = $request->query->get($field);
+            }
+        }
+
+        $equipments = $equipmentRepository->findByFilters($filters);
 
         return $this->json($equipments, Response::HTTP_OK);
 
@@ -58,7 +69,7 @@ class EquipmentController extends AbstractController
         $equipment = $serializer->deserialize($request->getContent(), Equipment::class, 'json');
         $em = $this->doctrine->getManager();
         $em->persist($equipment);
-        $em->flush;
+        $em->flush();
 
         return $this->json($equipment, Response::HTTP_CREATED);
     }
@@ -92,7 +103,7 @@ class EquipmentController extends AbstractController
 
             $em = $this->doctrine->getManager();
             $em->persist($equipment);
-            $em->flush;
+            $em->flush();
 
             return $this->json($equipment, Response::HTTP_CREATED);
         }else{

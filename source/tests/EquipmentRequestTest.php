@@ -4,13 +4,11 @@ namespace App\Tests;
 
 use App\Entity\Equipment;
 use Doctrine\ORM\EntityManagerInterface;
-// use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 
-class EquipmentRequestTest extends ApiTestCase
+class EquipmentRequestTest extends WebTestCase
 {   
     protected $client = null;
     protected EntityManagerInterface $entityManager;
@@ -24,22 +22,26 @@ class EquipmentRequestTest extends ApiTestCase
     
     public function testCreateEquipment():void
     {
-       
-        $response = $this->client->request(
-            'POST',
-            '/api/equipment',
+
+        $this->client->request(
+            'POST', 'api/equipment',
+            [],
+            [],
             [
-                'headers' => ['Accept' => 'application/json'],
-                'json' => [
-                    'name' => 'test',
-                            'category' => 'mobile',
-                            'number' => '133444',
-                ],
-            ]
+                'CONTENT_TYPE' => 'application/json',
+            ],
+            json_encode([
+                'name' => 'test',
+                'category' => 'mobile',
+                'number' => '133444',
+            ])
         );
 
+
+        $response = $this->client->getResponse();
+
       
-        $arr = $response->toArray();
+        $arr = (array) json_decode($response->getContent());
               
         $this->assertResponseIsSuccessful();
         
@@ -62,10 +64,7 @@ class EquipmentRequestTest extends ApiTestCase
                
         $this->client->request(
             'GET',
-            '/api/equipment',
-            [
-                'headers' => ['Accept' => 'application/json'],
-            ]
+            '/api/equipment'
         );
 
         $response = $this->client->getResponse();
@@ -89,20 +88,23 @@ class EquipmentRequestTest extends ApiTestCase
         $record = $this->entityManager->getRepository(Equipment::class)->findOneBy(['name' => 'test']);
         
         $recordId = $record->getId();
-       
-        $response = $this->client->request(
-            'PUT', 
-            '/api/equipment/'.$recordId,
+
+        $this->client->request(
+            'PUT', 'api/equipment/'.$recordId,
+            [],
+            [],
             [
-                'headers' => ['Accept' => 'application/json'],
-                'json' => [
-                    'name' => 'test updated',
-                    'category' => 'mobile',
-                    'number' => '133444',
-                    'description' => 'this is the description',
-                ],
-            ]
+                'CONTENT_TYPE' => 'application/json',
+            ],
+            json_encode([
+                'name' => 'test updated',
+                'category' => 'mobile',
+                'number' => '133444',
+                'description' => 'this is the description',
+            ])
         );
+
+        $response = $this->client->getResponse();
 
         $obj = json_decode($response->getContent());
  
@@ -128,10 +130,7 @@ class EquipmentRequestTest extends ApiTestCase
 
         $this->client->request(
             'DELETE', 
-            'api/equipment/'.$recordId,
-            [
-                'headers' => ['Accept' => 'application/json'],
-            ]
+            'api/equipment/'.$recordId
         );
 
         $this->assertResponseIsSuccessful();
