@@ -5,10 +5,12 @@ namespace App\Tests;
 use App\Entity\Equipment;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 
-class EquipmentRequestTest extends WebTestCase
+class EquipmentRequestTest extends ApiTestCase
 {   
     protected $client = null;
     protected EntityManagerInterface $entityManager;
@@ -22,23 +24,23 @@ class EquipmentRequestTest extends WebTestCase
     
     public function testCreateEquipment():void
     {
-
-        $this->client->request(
-            'POST', 'api/equipment',
-            [],
-            [],
+       
+        $response = $this->client->request(
+            'POST',
+            '/api/equipment',
             [
-                'CONTENT_TYPE' => 'application/json',
-            ],
-            json_encode([
-                'name' => 'test',
-                'category' => 'mobile',
-                'number' => '133444',
-            ])
+                'headers' => ['Accept' => 'application/json'],
+                'json' => [
+                    'name' => 'test',
+                            'category' => 'mobile',
+                            'number' => '133444',
+                ],
+            ]
         );
 
-        $response = $this->client->getResponse();
-
+      
+        $arr = $response->toArray();
+              
         $this->assertResponseIsSuccessful();
         
         $this->assertResponseHeaderSame(
@@ -46,16 +48,25 @@ class EquipmentRequestTest extends WebTestCase
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-       
-        $obj = @json_decode($response->getContent());
-        
-        $this->assertIsObject($obj);
+
+        $this->assertArrayHasKey('id', $arr);
+        $this->assertArrayHasKey('name', $arr);
+        $this->assertArrayHasKey('category', $arr);
+        $this->assertArrayHasKey('description', $arr);
+        $this->assertArrayHasKey('createdAt', $arr);
+
     }
 
     public function testGetAllEquipments():void
     {     
                
-        $this->client->request('GET', '/api/equipment');
+        $this->client->request(
+            'GET',
+            '/api/equipment',
+            [
+                'headers' => ['Accept' => 'application/json'],
+            ]
+        );
 
         $response = $this->client->getResponse();
        
@@ -79,25 +90,22 @@ class EquipmentRequestTest extends WebTestCase
         
         $recordId = $record->getId();
        
-
-        $this->client->request(
-            'PUT', 'api/equipment/'.$recordId,
-            [],
-            [],
+        $response = $this->client->request(
+            'PUT', 
+            '/api/equipment/'.$recordId,
             [
-                'CONTENT_TYPE' => 'application/json',
-            ],
-            json_encode([
-                'name' => 'test updated',
-                'category' => 'mobile',
-                'number' => '133444',
-                'description' => 'this is the description',
-            ])
+                'headers' => ['Accept' => 'application/json'],
+                'json' => [
+                    'name' => 'test updated',
+                    'category' => 'mobile',
+                    'number' => '133444',
+                    'description' => 'this is the description',
+                ],
+            ]
         );
-    
-        $response = $this->client->getResponse();
+
         $obj = json_decode($response->getContent());
-        
+ 
         $this->assertResponseIsSuccessful();
         
         $this->assertResponseHeaderSame(
@@ -119,7 +127,11 @@ class EquipmentRequestTest extends WebTestCase
         $recordId = $record->getId();       
 
         $this->client->request(
-            'DELETE', 'api/equipment/'.$recordId
+            'DELETE', 
+            'api/equipment/'.$recordId,
+            [
+                'headers' => ['Accept' => 'application/json'],
+            ]
         );
 
         $this->assertResponseIsSuccessful();
